@@ -1,0 +1,134 @@
+<div class="stage-description">
+    大语言模型的初始阶段，主要能力是通过预测下一个词元（token）来生成文本。模型使用自回归方式，每次生成一个token，然后将其添加到上下文中用于下一步预测。
+</div>
+
+<div class="visualization-container">
+    <div class="tab-container">
+        <div class="tab-buttons">
+            <button class="tab-button active" data-tab="product">产品形态</button>
+            <button class="tab-button" data-tab="api">接口形态</button>
+            <button class="tab-button" data-tab="prompt">工作原理</button>
+            <button class="tab-button" data-tab="questions">关键问题</button>
+            <button class="tab-button" data-tab="features">阶段特点</button>
+            <button class="tab-button" data-tab="compare">阶段对比</button>
+        </div>
+
+        <div class="tab-content" data-tab="questions">
+            <div class="focus-point">
+                <div class="key-questions">
+                    <ul>
+                        <li>如何有效地从海量文本数据中学习语言模式和知识？</li>
+                        <li>如何准确预测序列中下一个最可能出现的token？</li>
+                        <li>如何平衡模型的记忆能力和泛化能力？</li>
+                        <li>如何处理长序列依赖关系？</li>
+                        <li>如何提高模型在不同语言和领域的鲁棒性？</li>
+                        <li>如何解决训练过程中的计算效率问题？</li>
+                        <li>如何控制生成文本的质量和连贯性？</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content active" data-tab="product">
+            <div class="model-card">
+                <div class="model-header">
+                    <span>辅助模型效果可视化的小工具</span>
+                    <span>例如：OpenAI早期的Playground</span>
+                </div>
+                <div class="model-body">
+                    <div class="prompt-area">
+                        <div class="prompt-label">输入 (Raw Text Prompt):</div>
+                        <div class="prompt-content">人工智能正在改变我们的</div>
+                        <button id="generateBtn" class="generate-btn">开始生成</button>
+                    </div>
+
+                    <div class="output-area">
+                        <div class="output-label">输出 (继续的文本):</div>
+                        <div class="output-content" id="outputContent">人工智能正在改变我们的</div>
+                    </div>
+
+                    <div class="token-prediction" id="tokenPrediction" style="display: none;">
+                    </div>
+                </div>
+                <div class="model-footer"></div>
+            </div>
+        </div>
+
+        <div class="tab-content" data-tab="api">
+            <div class="focus-point">
+                <p>在这个阶段，大语言模型主要通过简单的completion API来提供服务。输入是纯文本，输出为文本的延续预测。以下是一个典型的API调用示例：</p>
+                
+                <div class="api-example">
+                    <div class="api-request">
+                        <div class="code-header">请求示例</div>
+                        <pre><code class="language">curl https://xxx/v1/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "davinci-002",
+    "prompt": "人工智能正在改变我们的"
+  }'</code></pre>
+                    </div>
+                    
+                    <div class="api-response">
+                        <div class="code-header">响应示例</div>
+                        <pre><code>{
+    "id": "cmpl-xxx",
+    "object": "text_completion",
+    "created": 1677649420,
+    "model": "davinci-002",
+    "text": "生活方式，从智能手机助手到自动驾驶汽车...",
+    "finish_reason": "length"
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" data-tab="prompt">
+            <div class="focus-point">
+                <div class="model-internals">
+                    <div class="processing-step">
+                        <div class="processing-box">
+                            <strong>输入上下文</strong><br>
+                            原始文本序列
+                        </div>
+                        <div class="processing-arrow">→</div>
+                        <div class="processing-box">
+                            <strong>Token化</strong><br>
+                            切分为词元
+                        </div>
+                        <div class="processing-arrow">→</div>
+                        <div class="processing-box">
+                            <strong>概率分布</strong><br>
+                            计算下一个词的概率
+                        </div>
+                        <div class="processing-arrow loop-arrow">↻</div>
+                        <div class="processing-box">
+                            <strong>采样生成</strong><br>
+                            选择下一个token
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" data-tab="features">
+            <div class="focus-point">
+                <p>在这个阶段，大语言模型没有使用特定的提示模板结构。输入就是纯文本，输出也是纯文本的延续。模型被训练为在给定上下文的情况下，最大化下一个token的概率。</p>
+            </div>
+        </div>
+
+        <div class="tab-content" data-tab="compare">
+            <div class="key-diff">
+                <div class="key-diff-title">与后续阶段的关键区别</div>
+                <ul class="diff-list">
+                    <li class="diff-item">没有明确的指令，纯粹是文本延续</li>
+                    <li class="diff-item">无结构化输入/输出格式</li>
+                    <li class="diff-item">预训练目标仅是语言建模（预测下一个token）</li>
+                    <li class="diff-item">没有明确的任务导向能力</li>
+                    <li class="diff-item">训练数据是大量网络文本，没有特殊标注</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

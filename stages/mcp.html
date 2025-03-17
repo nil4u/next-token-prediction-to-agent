@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Context Protocol (MCP) 可视化</title>
+    <link href="https://cdn.staticfile.org/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.staticfile.org/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4554ff;
+            --secondary: #6c63ff;
+            --accent: #ff6584;
+            --dark: #2a2a3c;
+            --light: #f8f9fc;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            overflow: hidden;
+            /* 改为 hidden 防止出现滚动条 */
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Noto Serif SC', serif;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1024px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .diagram-container {
+            position: relative;
+            width: 100%;
+            height: 80vh;
+            /* 改为视口高度的百分比 */
+            min-height: 600px;
+            max-height: 800px;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        .component {
+            position: absolute;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .component:hover {
+            transform: translateY(-5px) scale(1.05);
+        }
+
+        .tooltip {
+            position: absolute;
+            background-color: rgba(42, 42, 60, 0.85);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 50;
+            max-width: 250px;
+            backdrop-filter: blur(5px);
+        }
+
+        .client-glow {
+            position: absolute;
+            inset: 0;
+            background-color: white;
+            opacity: 0;
+            border-radius: 0.375rem;
+        }
+
+        svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="fixed inset-0 flex flex-col items-center justify-center bg-gray-900 z-50">
+        <div class="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p class="text-white">加载 MCP 可视化中...</p>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <div class="flex justify-center">
+            <!-- Right Visualization Panel -->
+            <div class="bg-white rounded-xl shadow-lg p-2 w-full">
+                <h1 class="font-bold mb-4 pb-2 border-b-2 border-blue-500 text-center">Model Context Protocol</h1>
+                <div id="diagram" class="diagram-container">
+                    <!-- User Component -->
+                    <div class="component user" style="left: 50px; top: 50px;">
+                        <div class="flex flex-col items-center">
+                            <div
+                                class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-400 to-pink-600 flex items-center justify-center text-white">
+                                <i class="fas fa-user text-xl"></i>
+                            </div>
+                            <div class="mt-2 text-center">
+                                <span class="font-bold text-gray-800">用户</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MCP Host Component with Client Inside -->
+                    <div class="component host" style="left: 300px; top: 0px;">
+                        <div class="mt-2 text-center">
+                            <span class="font-bold text-gray-800 block">MCP Host</span>
+                            <span class="font-bold text-gray-800">(Claude Desktop)</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div
+                                class="relative w-32 h-28 rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 flex flex-col items-center justify-center text-white p-2">
+                                <!-- <div class="absolute top-2 left-0 w-full text-center">
+                                    <span class="text-xs font-semibold">MCP Host</span>
+                                </div> -->
+
+                                <i class="fas fa-desktop text-xl mb-2"></i>
+
+                                <!-- Client inside Host -->
+                                <div
+                                    class="relative mt-1 w-32 h-10 rounded-md bg-gradient-to-br from-indigo-500/70 to-indigo-700/70 flex items-center justify-center">
+                                    <div class="client-glow"></div>
+                                    <i class="client-icon fas fa-code text-sm"></i>
+                                    <span class="ml-1 text-xs">MCP Client</span>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                    <!-- MCP Server Component -->
+                    <div class="component server" style="left: 550px; top: 200px;">
+                        <div class="flex flex-col items-center">
+                            <div
+                                class="w-16 h-14 rounded-md bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white">
+                                <i class="fas fa-server text-lg"></i>
+                            </div>
+                            <div class="mt-2 text-center">
+                                <span class="font-bold text-gray-800">MCP Server</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Service Component -->
+                    <div class="component service" style="left: 750px; top: 200px;">
+                        <div class="flex flex-col items-center">
+                            <div
+                                class="w-16 h-16 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white">
+                                <i class="fas fa-cogs text-lg"></i>
+                            </div>
+                            <div class="mt-2 text-center">
+                                <span class="font-bold text-gray-800">服务</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Source Component -->
+                    <div class="component datasource" style="left: 750px; top: 50px;">
+                        <div class="flex flex-col items-center">
+                            <div
+                                class="w-16 h-16 rounded-md bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white">
+                                <i class="fas fa-database text-lg"></i>
+                            </div>
+                            <div class="mt-2 text-center">
+                                <span class="font-bold text-gray-800">数据源</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Model Component -->
+                    <div class="component model" style="left: 550px; top: 50px;">
+                        <div class="flex flex-col items-center">
+                            <div
+                                class="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center text-white">
+                                <i class="fas fa-brain text-lg"></i>
+                            </div>
+                            <div class="mt-2 text-center">
+                                <span class="font-bold text-gray-800 block">AI 模型</span>
+                                <span class="font-bold text-gray-800">(Claude)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Connection Paths -->
+                    <svg>
+                        <!-- 1. User -> MCP Host -->
+                        <path class="path-1" d="M100,65 Q190,65 290,65" fill="none" stroke="#ff6584" stroke-width="3"
+                            stroke-linecap="round" />
+                        <circle class="dot-1" cx="190" cy="65" r="5" fill="#ff6584" />
+                        <text x="190" y="50" text-anchor="middle" class="text-1 text-xs text-gray-700">
+                            1. 用户输入
+                        </text>
+
+                        <!-- 2. MCP Host -> Model -->
+                        <path class="path-2" d="M430,65 Q490,65 550,65" fill="none" stroke="#4554ff" stroke-width="3"
+                            stroke-linecap="round" />
+                        <circle class="dot-2" cx="490" cy="65" r="5" fill="#4554ff" />
+                        <text x="470" y="50" text-anchor="middle" class="text-2 text-xs text-gray-700">
+                            2. 访问模型
+                        </text>
+
+                        <!-- 3. Model -> MCP Host -->
+                        <path class="path-3" d="M550,85 Q450,85 430,85" fill="none" stroke="#7209b7" stroke-width="3"
+                            stroke-linecap="round" />
+                        <circle class="dot-3" cx="490" cy="85" r="5" fill="#7209b7" />
+                        <text x="480" y="105" text-anchor="middle" class="text-3 text-xs text-gray-700">
+                            3. 工具调用指令
+                        </text>
+
+                        <!-- 4. MCP Host -> MCP Server -->
+                        <path class="path-4" d="M400,175 Q400,180 550,215" fill="none" stroke="#4554ff" stroke-width="3"
+                            stroke-linecap="round" />
+                        <circle class="dot-4" cx="480" cy="200" r="5" fill="#4554ff" />
+                        <text x="465" y="180" text-anchor="middle" class="text-4 text-xs text-gray-700">
+                            4. mcp server交互
+                        </text>
+
+                        <!-- 5. MCP Server -> Data Source -->
+                        <path class="path-5" d="M630,230 Q670,120 750,90" fill="none" stroke="#3a86ff" stroke-width="3"
+                            stroke-linecap="round" />
+                        <circle class="dot-5" cx="670" cy="150" r="5" fill="#3a86ff" />
+                        <text x="685" y="130" text-anchor="middle" class="text-5 text-xs text-gray-700">
+                            访问数据
+                        </text>
+
+                        <!-- 6. MCP Server -> Service -->
+                        <path class="path-6" d="M630,240 Q670,240 750,240" fill="none" stroke="#3a86ff" stroke-width="3"
+                            stroke-linecap="round" />
+                        <circle class="dot-6" cx="700" cy="240" r="5" fill="#3a86ff" />
+                        <text x="680" y="260" text-anchor="middle" class="text-6 text-xs text-gray-700">
+                            调用 API
+                        </text>
+
+                        <!-- 7. MCP Server -> MCP Host -->
+                        <path class="path-7" d="M550,240 Q490,240 350,175" fill="none" stroke="#3a86ff" stroke-width="3"
+                            stroke-linecap="round" />
+                        <circle class="dot-7" cx="450" cy="220" r="5" fill="#3a86ff" />
+                        <text x="450" y="240" text-anchor="middle" class="text-7 text-xs text-gray-700">
+                            5. 返回结果
+                        </text>
+
+                        <!-- 8. MCP Host -> Model -->
+                        <path class="path-8" d="M430,125 Q490,125 550,125" fill="none" stroke="#4554ff" stroke-width="3"
+                            stroke-linecap="round" />
+                        <circle class="dot-8" cx="490" cy="125" r="5" fill="#4554ff" />
+                        <text x="470" y="140" text-anchor="middle" class="text-8 text-xs text-gray-700">
+                            6. 发送结果
+                        </text>
+
+                        <!-- 9. Model -> MCP Host -->
+                        <path class="path-9" d="M550,145 Q550,145 430,145" fill="none" stroke="#7209b7" stroke-width="3"
+                            stroke-linecap="round" />
+                        <circle class="dot-9" cx="490" cy="145" r="5" fill="#7209b7" />
+                        <text x="490" y="160" text-anchor="middle" class="text-9 text-xs text-gray-700">
+                            7. 生成响应
+                        </text>
+
+                        <!-- 10. MCP Host -> User -->
+                        <path class="path-10" d="M300,85 Q190,85 100,85" fill="none" stroke="#4554ff" stroke-width="3"
+                            stroke-linecap="round" />
+                        <circle class="dot-10" cx="190" cy="85" r="5" fill="#4554ff" />
+                        <text x="190" y="100" text-anchor="middle" class="text-10 text-xs text-gray-700">
+                            8. 显示响应
+                        </text>
+                    </svg>
+                    <!-- Animation Controls -->
+                    <div class="flex justify-center space-x-4 mt-6 top-2/4 absolute left-1/3 transform -translate-x-1/2">
+                        <button id="play-btn"
+                            class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center">
+                            <i class="fas fa-play mr-2"></i> 播放动画
+                        </button>
+                        <button id="pause-btn"
+                            class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 flex items-center">
+                            <i class="fas fa-pause mr-2"></i> 暂停动画
+                        </button>
+                        <button id="reset-btn"
+                            class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 flex items-center">
+                            <i class="fas fa-redo mr-2"></i> 重置动画
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Tooltip -->
+    <div id="tooltip" class="tooltip"></div>
+
+    <!-- Component Information -->
+    <script>
+        const componentInfo = {
+            user: {
+                title: '用户',
+                description: '使用MCP支持的应用程序（如Claude Desktop）的人，通过这些应用程序他们可以间接访问由MCP服务器提供的各种数据和服务。',
+                icon: 'fa-user'
+            },
+            host: {
+                title: 'MCP 主机',
+                description: '像Claude Desktop、IDE或AI工具这样的程序，它们想通过MCP访问数据。主机实现了MCP客户端，允许它们连接到多个MCP服务器。',
+                icon: 'fa-laptop-code'
+            },
+            server: {
+                title: 'MCP 服务器',
+                description: '通过标准化的模型上下文协议暴露特定功能的轻量级程序。每个服务器提供对特定数据源或服务的访问。',
+                icon: 'fa-server'
+            },
+            datasource: {
+                title: '本地数据源',
+                description: 'MCP服务器可以安全访问的计算机文件、数据库和服务。这些是存储在本地基础设施上的数据，不需要互联网访问。',
+                icon: 'fa-database'
+            },
+            service: {
+                title: '远程服务',
+                description: '通过互联网可用的外部系统（例如，通过API），MCP服务器可以连接到这些系统提供额外的功能和数据。',
+                icon: 'fa-cloud'
+            },
+            model: {
+                title: 'AI 模型',
+                description: '语言模型（如Claude），通过MCP主机访问，利用MCP获取的上下文数据增强其能力，提供更相关和更有用的响应。',
+                icon: 'fa-robot'
+            }
+        };
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Hide loading screen after everything is loaded
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loading-screen');
+                loadingScreen.style.opacity = '0';
+                loadingScreen.style.transition = 'opacity 0.5s ease';
+                setTimeout(() => loadingScreen.style.display = 'none', 500);
+            }, 1000);
+
+            // Animation Setup
+            let tl = gsap.timeline({ repeat: -1, repeatDelay: 1, paused: true });
+            let animationState = 'paused';
+
+            // Initialize paths with total length
+            document.querySelectorAll('[class^="path-"]').forEach(path => {
+                const length = path.getTotalLength();
+                gsap.set(path, {
+                    strokeDasharray: `${length} ${length}`,
+                    strokeDashoffset: length
+                });
+            });
+
+            // Set initial state for dots and text
+            gsap.set('[class^="dot-"]', { opacity: 0, scale: 0.5 });
+            gsap.set('[class^="text-"]', { opacity: 0 });
+            gsap.set('.client-glow', { opacity: 0 });
+
+            // Add animations to timeline
+            tl.to('.path-1', { strokeDashoffset: 0, duration: 0.8, ease: 'power1.inOut' })
+                .to('.text-1', { opacity: 1, duration: 0.3 }, '-=0.4')
+                .to('.dot-1', { scale: 1.5, opacity: 1, duration: 0.3, ease: 'back.out' })
+                .to('.dot-1', { scale: 1, duration: 0.3, ease: 'power1.inOut' }, '+=0.2')
+
+                .to('.path-2', { strokeDashoffset: 0, duration: 0.8, ease: 'power1.inOut' })
+                .to('.text-2', { opacity: 1, duration: 0.3 }, '-=0.4')
+                .to('.dot-2', { scale: 1.5, opacity: 1, duration: 0.3, ease: 'back.out' })
+                .to('.dot-2', { scale: 1, duration: 0.3, ease: 'power1.inOut' }, '+=0.2')
+
+                .to('.path-3', { strokeDashoffset: 0, duration: 0.8, ease: 'power1.inOut' })
+                .to('.text-3', { opacity: 1, duration: 0.3 }, '-=0.4')
+                .to('.dot-3', { scale: 1.5, opacity: 1, duration: 0.3, ease: 'back.out' })
+                .to('.dot-3', { scale: 1, duration: 0.3, ease: 'power1.inOut' }, '+=0.2')
+
+                // Client logic inside Host
+                .to('.client-glow', { opacity: 0.8, duration: 0.5, ease: 'power1.inOut' })
+                .to('.client-icon', { scale: 1.2, duration: 0.3, ease: 'back.out' })
+                .to('.client-icon', { scale: 1, duration: 0.3, ease: 'power1.inOut' }, '+=0.2')
+                .to('.client-glow', { opacity: 0, duration: 0.5, ease: 'power1.inOut' }, '+=0.2')
+
+                .to('.path-4', { strokeDashoffset: 0, duration: 0.8, ease: 'power1.inOut' })
+                .to('.text-4', { opacity: 1, duration: 0.3 }, '-=0.4')
+                .to('.dot-4', { scale: 1.5, opacity: 1, duration: 0.3, ease: 'back.out' })
+                .to('.dot-4', { scale: 1, duration: 0.3, ease: 'power1.inOut' }, '+=0.2')
+
+                .to('.path-5', { strokeDashoffset: 0, duration: 0.8, ease: 'power1.inOut' })
+                .to('.text-5', { opacity: 1, duration: 0.3 }, '-=0.4')
+                .to('.dot-5', { scale: 1.5, opacity: 1, duration: 0.3, ease: 'back.out' })
+                .to('.dot-5', { scale: 1, duration: 0.3, ease: 'power1.inOut' }, '+=0.2')
+
+                .to('.path-6', { strokeDashoffset: 0, duration: 0.8, ease: 'power1.inOut' })
+                .to('.text-6', { opacity: 1, duration: 0.3 }, '-=0.4')
+                .to('.dot-6', { scale: 1.5, opacity: 1, duration: 0.3, ease: 'back.out' })
+                .to('.dot-6', { scale: 1, duration: 0.3, ease: 'power1.inOut' }, '+=0.2')
+
+                .to('.path-7', { strokeDashoffset: 0, duration: 0.8, ease: 'power1.inOut' })
+                .to('.text-7', { opacity: 1, duration: 0.3 }, '-=0.4')
+                .to('.dot-7', { scale: 1.5, opacity: 1, duration: 0.3, ease: 'back.out' })
+                .to('.dot-7', { scale: 1, duration: 0.3, ease: 'power1.inOut' }, '+=0.2')
+
+                // Client logic inside Host (return)
+                .to('.client-glow', { opacity: 0.8, duration: 0.5, ease: 'power1.inOut' })
+                .to('.client-icon', { scale: 1.2, duration: 0.3, ease: 'back.out' })
+                .to('.client-icon', { scale: 1, duration: 0.3, ease: 'power1.inOut' }, '+=0.2')
+                .to('.client-glow', { opacity: 0, duration: 0.5, ease: 'power1.inOut' }, '+=0.2')
+
+                .to('.path-8', { strokeDashoffset: 0, duration: 0.8, ease: 'power1.inOut' })
+                .to('.text-8', { opacity: 1, duration: 0.3 }, '-=0.4')
+                .to('.dot-8', { scale: 1.5, opacity: 1, duration: 0.3, ease: 'back.out' })
+                .to('.dot-8', { scale: 1, duration: 0.3, ease: 'power1.inOut' }, '+=0.2')
+
+                .to('.path-9', { strokeDashoffset: 0, duration: 0.8, ease: 'power1.inOut' })
+                .to('.text-9', { opacity: 1, duration: 0.3 }, '-=0.4')
+                .to('.dot-9', { scale: 1.5, opacity: 1, duration: 0.3, ease: 'back.out' })
+                .to('.dot-9', { scale: 1, duration: 0.3, ease: 'power1.inOut' }, '+=0.2')
+
+                .to('.path-10', { strokeDashoffset: 0, duration: 0.8, ease: 'power1.inOut' })
+                .to('.text-10', { opacity: 1, duration: 0.3 }, '-=0.4')
+                .to('.dot-10', { scale: 1.5, opacity: 1, duration: 0.3, ease: 'back.out' })
+                .to('.dot-10', { scale: 1, duration: 0.3, ease: 'power1.inOut' }, '+=0.2')
+
+                // Reset all for the next iteration
+                .set('[class^="path-"]', function () {
+                    const path = this.targets()[0];
+                    const length = path.getTotalLength();
+                    return { strokeDashoffset: length };
+                })
+                .set('[class^="dot-"]', { opacity: 0 })
+                .set('[class^="text-"]', { opacity: 0 })
+                .set('.client-glow', { opacity: 0 });
+
+            // Start animation automatically
+            tl.play();
+            animationState = 'playing';
+
+            // Animation controls
+            document.getElementById('play-btn').addEventListener('click', function () {
+                if (animationState === 'paused') {
+                    tl.play();
+                    animationState = 'playing';
+                }
+            });
+
+            document.getElementById('pause-btn').addEventListener('click', function () {
+                if (animationState === 'playing') {
+                    tl.pause();
+                    animationState = 'paused';
+                }
+            });
+
+            document.getElementById('reset-btn').addEventListener('click', function () {
+                tl.restart();
+                animationState = 'playing';
+            });
+
+            // Component tooltips and info panel
+            const tooltip = document.getElementById('tooltip');
+            const componentInfoPanel = document.getElementById('component-info');
+
+            document.querySelectorAll('.component').forEach(component => {
+                const type = Array.from(component.classList).find(cls => componentInfo[cls]);
+
+                // Hover tooltip
+                component.addEventListener('click', function () {
+                    if (componentInfo[type]) {
+                        const info = componentInfo[type];
+                        componentInfoPanel.innerHTML = `
+                            <div class="flex items-center gap-2 mb-2 text-blue-600">
+                                <i class="fas ${info.icon} text-lg"></i>
+                                <h3 class="text-xl font-bold">${info.title}</h3>
+                            </div>
+                            <p class="text-gray-700">${info.description}</p>
+                        `;
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

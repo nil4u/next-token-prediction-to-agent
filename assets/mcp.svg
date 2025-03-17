@@ -1,0 +1,198 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600">
+  <!-- Background -->
+  <rect width="900" height="600" fill="#f8f9fc" />
+  
+  <!-- Component Colors -->
+  <defs>
+    <linearGradient id="userGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff6584" />
+      <stop offset="100%" stop-color="#e83e8c" />
+    </linearGradient>
+    <linearGradient id="hostGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4554ff" />
+      <stop offset="100%" stop-color="#3644cc" />
+    </linearGradient>
+    <linearGradient id="clientGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6c63ff" />
+      <stop offset="100%" stop-color="#5a52e0" />
+    </linearGradient>
+    <linearGradient id="serverGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3a86ff" />
+      <stop offset="100%" stop-color="#2563eb" />
+    </linearGradient>
+    <linearGradient id="serviceGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4cc9f0" />
+      <stop offset="100%" stop-color="#0ca5e9" />
+    </linearGradient>
+    <linearGradient id="modelGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7209b7" />
+      <stop offset="100%" stop-color="#560bad" />
+    </linearGradient>
+    <linearGradient id="dataSourceGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00b4d8" />
+      <stop offset="100%" stop-color="#0096c7" />
+    </linearGradient>
+    
+    <!-- Arrow Markers -->
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333" />
+    </marker>
+    <marker id="userArrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#ff6584" />
+    </marker>
+    <marker id="hostArrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4554ff" />
+    </marker>
+    <marker id="modelArrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#7209b7" />
+    </marker>
+    <marker id="clientArrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#6c63ff" />
+    </marker>
+    <marker id="serverArrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#3a86ff" />
+    </marker>
+  </defs>
+  
+  <!-- Title and Description -->
+  <text x="450" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#2a2a3c">Model Context Protocol (MCP)</text>
+  <text x="450" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#666">Standardized way to connect AI models to different data sources and tools</text>
+  
+  <!-- Components -->
+  
+  <!-- User Component -->
+  <g transform="translate(100, 200)">
+    <circle cx="0" cy="-15" r="25" fill="url(#userGradient)" />
+    <path d="M-20,15 L0,50 L20,15 Z" fill="url(#userGradient)" />
+    <text x="0" y="80" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#333">User</text>
+  </g>
+  
+  <!-- MCP Host (Claude Desktop) -->
+  <g transform="translate(250, 200)">
+    <rect x="-45" y="-40" width="90" height="80" rx="8" fill="url(#hostGradient)" />
+    <rect x="-40" y="-35" width="80" height="15" rx="4" fill="#ffffff20" />
+    <text x="0" y="15" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="white">MCP Host</text>
+    <text x="0" y="80" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#333">Claude Desktop</text>
+  </g>
+  
+  <!-- MCP Client -->
+  <g transform="translate(250, 350)">
+    <rect x="-35" y="-25" width="70" height="50" rx="5" fill="url(#clientGradient)" />
+    <rect x="35" y="-15" width="15" height="10" fill="url(#clientGradient)" />
+    <rect x="35" y="5" width="15" height="10" fill="url(#clientGradient)" />
+    <text x="0" y="5" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white">Client</text>
+    <text x="0" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#333">MCP Client</text>
+  </g>
+  
+  <!-- MCP Server -->
+  <g transform="translate(450, 350)">
+    <rect x="-40" y="-30" width="80" height="60" rx="5" fill="url(#serverGradient)" />
+    <line x1="-30" y1="-15" x2="30" y2="-15" stroke="white" stroke-width="2" />
+    <line x1="-30" y1="0" x2="30" y2="0" stroke="white" stroke-width="2" />
+    <line x1="-30" y1="15" x2="30" y2="15" stroke="white" stroke-width="2" />
+    <text x="0" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#333">MCP Server</text>
+  </g>
+  
+  <!-- Service -->
+  <g transform="translate(600, 350)">
+    <path d="M-30,0 
+             A20,20 0 0,1 -10,-20 
+             A15,15 0 0,1 10,-10 
+             A20,20 0 0,1 30,0 
+             A15,15 0 0,1 10,20 
+             A20,20 0 0,1 -20,10 Z" 
+          fill="url(#serviceGradient)" />
+    <text x="0" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#333">Service</text>
+  </g>
+  
+  <!-- Data Source -->
+  <g transform="translate(600, 200)">
+    <ellipse cx="0" cy="-20" rx="35" ry="15" fill="url(#dataSourceGradient)" />
+    <rect x="-35" y="-20" width="70" height="40" fill="url(#dataSourceGradient)" />
+    <ellipse cx="0" cy="20" rx="35" ry="15" fill="url(#dataSourceGradient)" />
+    <text x="0" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#333">Data Source</text>
+  </g>
+  
+  <!-- Model -->
+  <g transform="translate(450, 200)">
+    <rect x="-40" y="-40" width="80" height="80" rx="15" fill="url(#modelGradient)" />
+    <circle cx="-15" cy="0" r="8" fill="white" />
+    <circle cx="15" cy="0" r="8" fill="white" />
+    <text x="0" y="80" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#333">AI Model</text>
+  </g>
+  
+  <!-- Connection Paths -->
+  <!-- 1. User -> MCP Host -->
+  <path d="M130,200 Q170,180 220,200" fill="none" stroke="#ff6584" stroke-width="3" stroke-dasharray="5,3" marker-end="url(#userArrow)" />
+  <text x="175" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">1. User Input</text>
+  
+  <!-- 2. MCP Host -> Model -->
+  <path d="M295,200 Q350,180 410,200" fill="none" stroke="#4554ff" stroke-width="3" stroke-dasharray="5,3" marker-end="url(#hostArrow)" />
+  <text x="350" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">2. Access Model</text>
+  
+  <!-- 3. Model -> MCP Host -->
+  <path d="M410,220 Q350,240 295,220" fill="none" stroke="#7209b7" stroke-width="3" stroke-dasharray="5,3" marker-end="url(#modelArrow)" />
+  <text x="350" y="255" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">3. Tool Call</text>
+  
+  <!-- 4. MCP Host -> MCP Client -->
+  <path d="M250,240 Q250,275 250,325" fill="none" stroke="#4554ff" stroke-width="3" stroke-dasharray="5,3" marker-end="url(#hostArrow)" />
+  <text x="215" y="290" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">4. Parse Tool Call</text>
+  
+  <!-- 5. MCP Client -> MCP Server -->
+  <path d="M285,350 Q350,350 410,350" fill="none" stroke="#6c63ff" stroke-width="3" stroke-dasharray="5,3" marker-end="url(#clientArrow)" />
+  <text x="350" y="335" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">5. Interact</text>
+  
+  <!-- 6. MCP Server -> Data Source -->
+  <path d="M490,335 Q530,300 560,230" fill="none" stroke="#3a86ff" stroke-width="3" stroke-dasharray="5,3" marker-end="url(#serverArrow)" />
+  <text x="545" y="290" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Access Data</text>
+  
+  <!-- 7. MCP Server -> Service -->
+  <path d="M490,350 Q530,350 570,350" fill="none" stroke="#3a86ff" stroke-width="3" stroke-dasharray="5,3" marker-end="url(#serverArrow)" />
+  <text x="530" y="380" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Call API</text>
+  
+  <!-- 8. MCP Client -> MCP Host -->
+  <path d="M270,325 Q290,290 270,240" fill="none" stroke="#6c63ff" stroke-width="3" stroke-dasharray="5,3" marker-end="url(#clientArrow)" />
+  <text x="300" y="290" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">6. Return Result</text>
+  
+  <!-- 9. MCP Host -> Model -->
+  <path d="M270,180 Q350,150 430,180" fill="none" stroke="#4554ff" stroke-width="3" stroke-dasharray="5,3" marker-end="url(#hostArrow)" />
+  <text x="350" y="135" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">7. Send Result</text>
+  
+  <!-- 10. Model -> MCP Host -->
+  <path d="M430,160 Q350,130 270,160" fill="none" stroke="#7209b7" stroke-width="3" stroke-dasharray="5,3" marker-end="url(#modelArrow)" />
+  <text x="350" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">8. Generate Response</text>
+  
+  <!-- 11. MCP Host -> User (completing the cycle) -->
+  <path d="M220,180 Q170,150 130,180" fill="none" stroke="#4554ff" stroke-width="3" stroke-dasharray="5,3" marker-end="url(#hostArrow)" />
+  <text x="175" y="135" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Display Response</text>
+  
+  <!-- Legend -->
+  <rect x="680" y="20" width="200" height="210" rx="8" fill="#ffffff" stroke="#ddd" stroke-width="1" />
+  <text x="780" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#333">Legend</text>
+  
+  <!-- Legend items -->
+  <circle cx="700" y="65" r="8" fill="url(#userGradient)" />
+  <text x="715" y="70" font-family="Arial, sans-serif" font-size="12" fill="#333">User</text>
+  
+  <rect x="692" y="85" width="16" height="16" rx="3" fill="url(#hostGradient)" />
+  <text x="715" y="98" font-family="Arial, sans-serif" font-size="12" fill="#333">MCP Host</text>
+  
+  <rect x="692" y="115" width="16" height="16" rx="3" fill="url(#clientGradient)" />
+  <text x="715" y="128" font-family="Arial, sans-serif" font-size="12" fill="#333">MCP Client</text>
+  
+  <rect x="692" y="145" width="16" height="16" rx="3" fill="url(#serverGradient)" />
+  <text x="715" y="158" font-family="Arial, sans-serif" font-size="12" fill="#333">MCP Server</text>
+  
+  <rect x="692" y="175" width="16" height="16" rx="3" fill="url(#dataSourceGradient)" />
+  <text x="715" y="188" font-family="Arial, sans-serif" font-size="12" fill="#333">Data Source</text>
+  
+  <path d="M692,205 A8,8 0 0,1 700,195 A8,8 0 0,1 708,205 Z" fill="url(#serviceGradient)" />
+  <text x="715" y="208" font-family="Arial, sans-serif" font-size="12" fill="#333">Service</text>
+  
+  <!-- Description Box -->
+  <rect x="50" y="450" width="800" height="130" rx="8" fill="#ffffff" stroke="#ddd" stroke-width="1" />
+  <text x="450" y="480" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#333">Model Context Protocol (MCP)</text>
+  <text x="450" y="510" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#555">An open protocol that standardizes how applications provide context to LLMs</text>
+  <text x="450" y="535" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#555">MCP helps build agents and complex workflows by connecting AI models to data sources and tools</text>
+  <text x="450" y="560" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#555">The cycle continues as users interact with the system, providing a seamless integration</text>
+</svg>

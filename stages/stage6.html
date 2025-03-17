@@ -1,0 +1,87 @@
+<div class="stage-description">
+    <p>这一个阶段其实跟模型本身的能力迭代关系不大，更多是在思考如何能够更方便的给模型提供更多的、更好的、更 high level的工具，让模型能够更好地完成任务。
+        甚至是完成智能体间的互联互通。</p>
+    <p>这里以Claude MCP作为例子，它是一个面向模型的标准化协议，可以让模型更好地理解和使用各种工具。（类似的协议还有不少）</p>
+</div>
+
+<div class="visualization-container">
+    <div class="tab-container">
+        <div class="tab-buttons">
+            <button class="tab-button active" data-tab="product">产品形态</button>
+            <button class="tab-button" data-tab="api">接口形态</button>
+            <button class="tab-button" data-tab="prompt">工作原理</button>
+            <button class="tab-button" data-tab="questions">关键问题</button>
+            <button class="tab-button" data-tab="features">阶段特点</button>
+            <button class="tab-button" data-tab="compare">阶段对比</button>
+        </div>
+
+        <div class="tab-content active" data-tab="product">
+            <div class="model-card">
+                <div class="model-header">
+                    <span>面向模型的标准化协议</span>
+                    <span>例如：Claude/MCP，w3c-cg/webagents, AutoGPT/agent-protocol</span>
+                </div>
+                <video class="demo-video" style="width: 100%; height: 100%; max-width: 100%; object-fit: contain;"
+                    autoplay loop muted playsinline>
+                    <source src="assets/mcp.mp4" type="video/mp4">
+                    您的浏览器不支持 video 标签。
+                </video>
+            </div>
+        </div>
+
+        <div class="tab-content" data-tab="api">
+            <div class="focus-point">
+                <p>跟前一个阶段一样，通过 Chat Completion API来提供服务， 模型 API 本身没有什么变化，更多是在标准化上做了新的尝试</p>
+            </div>
+        </div>
+
+        <div class="tab-content" data-tab="prompt">
+            <div class="focus-point">
+                <p>AI应用的处理流程跟普通的工具调用其实没有太大的不同</p>
+                <ol class="p-4 mb-2">
+                    <li>1. 接收用户的指令</li>
+                    <li>2. 发送给模型处理</li>
+                    <li>3. 模型返回工具调用指令</li>
+                    <li>4. 调用具体的工具</li>
+                    <li>5. 将工具结果给到模型</li>
+                    <li>7. 模型处理结果</li>
+                    <li>8. 模型返回下一步的动作</li>
+                    <li>9. 如果是回复，就回复给用户；如果还是工具调用指令，跳转到第4步。</li>
+                    </ol>
+                    <p class="m-2"><strong style="color: #f8f8bb;">最大的区别是调用工具变成了通过mcp client跟mcp server完成交互</strong></p>
+                    <iframe src="stages/mcp.html" style="width: 1024px; height: 500px; padding: 4px;"></iframe>
+            </div>
+        </div>
+
+        <div class="tab-content" data-tab="questions">
+            <div class="focus-point">
+                <div class="key-questions">
+                    <ul>
+                        <li>如何设计一个统一的工具调用协议？</li>
+                        <li>如何确保不同模型和工具之间的互操作性？</li>
+                        <li>如何保证工具调用的安全性和权限控制？</li>
+                        <li>如何实现智能体之间的高效通信和协作？</li>
+                        <li>如何标准化工具的接口定义和调用方式？</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" data-tab="features">
+            <div class="focus-point">
+                <p>标准化的能力接入协议</p>
+                <p>agent互联互通的基础设施</p>
+            </div>
+        </div>
+
+        <div class="tab-content" data-tab="compare">
+            <div class="key-diff">
+                <div class="key-diff-title">与前一阶段的关键区别</div>
+                <ul class="diff-list">
+                    <li class="diff-item">非模型的能力提升</li>
+                    <li class="diff-item" style="color: #f8f8bb;">开始推进智能体通信网络</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

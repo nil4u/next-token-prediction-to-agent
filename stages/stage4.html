@@ -1,0 +1,188 @@
+<div class="stage-description">
+    函数调用模型能够理解何时以及如何调用外部工具。它们可以解析用户意图，选择合适的函数，生成结构化的参数，实现与外部API和系统的无缝集成。
+</div>
+
+<div class="visualization-container">
+    <div class="tab-container">
+        <div class="tab-buttons">
+            <button class="tab-button active" data-tab="product">产品形态</button>
+            <button class="tab-button" data-tab="api">接口形态</button>
+            <button class="tab-button" data-tab="prompt">工作原理</button>
+            <button class="tab-button" data-tab="questions">关键问题</button>
+            <button class="tab-button" data-tab="features">阶段特点</button>
+            <button class="tab-button" data-tab="compare">阶段对比</button>
+        </div>
+
+        <div class="tab-content active" data-tab="product">
+            <div class="model-card">
+                <div class="model-header">
+                    <span>可以挂工具了</span>
+                    <span>例如：查天气、联网、知识库检索等等</span>
+                </div>
+                <video class="demo-video" style="width: 100%; height: 100%; max-width: 100%; object-fit: contain;" autoplay loop muted playsinline>
+                    <source src="assets/functioncall-product.mp4" type="video/mp4">
+                    您的浏览器不支持 video 标签。
+                </video>
+            </div>
+        </div>
+
+        <div class="tab-content" data-tab="api">
+            <div class="focus-point">
+                <p>跟前一个阶段一样，通过 Chat Completion API来提供服务， 最大的差异在于请求中增加了tools字段，用于传递工具信息给到模型，让模型在必要的时候发起调用指令。以下是一个典型的API调用示例：</p>
+
+                <div class="api-example">
+                    <div class="api-request">
+                        <div class="code-header">请求示例</div>
+                        <pre class="code-block"><code>curl https://xxxx/v1/chat/completions \
+-H "Content-Type: application/json" \
+-d '{
+      "model": "gpt-4o",
+      "messages": [
+        {
+          "role": "user",
+          "content": "What is the weather like in Boston today?"
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "get_current_weather",
+            "description": "Get the current weather in a given location",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "location": {
+                  "type": "string",
+                  "description": "The city and state, e.g. San Francisco, CA"
+                },
+                "unit": {
+                  "type": "string",
+                  "enum": ["celsius", "fahrenheit"]
+                }
+            },
+            "required": ["location"]
+          }
+        }
+      }
+    ],
+  "tool_choice": "auto"
+}'
+                          </code></pre>
+                    </div>
+
+                    <div class="api-response">
+                        <div class="code-header">响应示例</div>
+                        <pre class="code-block"><code>{
+  "model": "gpt-4o-mini",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": null,
+        "tool_calls": [
+          {
+            "id": "call_abc123",
+            "type": "function",
+            "function": {
+              "name": "get_current_weather",
+              "arguments": "{\n\"location\": \"Boston, MA\"\n}"
+            }
+          }
+        ]
+      },
+      "finish_reason": "tool_calls"
+    }
+  ]
+}
+
+                          </code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" data-tab="prompt">
+            <div class="focus-point">
+                <p>在这个阶段，模型继续迭代了<strong style="color: #f8f8bb;">提示模板</strong>，主要是增加了工具[tools]的描述结构。
+                    模版结构通常为:
+                <pre>
+                    [system] system message [/system]
+                    [tools]工具的描述（工具名、 参数、注释）[/tools]
+                    [user]第一条消息[/user]
+                    [assistant]第一条回复[/assistant] 
+                    ...
+                    [user]用户最新的输入[/user]
+                    [assistant]
+                </pre>
+                需要特别注意的是，<strong style="color: #f8f8bb;">函数的调用逻辑并不在模型側，而是在发起请求的client側自行处理</strong>。
+                </p>
+                <div class="model-internals">
+                    <div class="processing-step">
+                        <div class="processing-box">
+                            <strong>输入上下文</strong><br>
+                            原始文本序列
+                        </div>
+                        <div class="processing-arrow">→</div>
+                        <div class="processing-box diff-step">
+                            <strong>模版填充</strong><br>
+                            将用户输入填充到完整的prompt模版里
+                        </div>
+                        <div class="processing-arrow">→</div>
+                        <div class="processing-box">
+                            <strong>Token化</strong><br>
+                            切分为词元
+                        </div>
+                        <div class="processing-arrow">→</div>
+                        <div class="processing-box">
+                            <strong>概率分布</strong><br>
+                            计算下一个词的概率
+                        </div>
+                        <div class="processing-arrow loop-arrow">↻</div>
+                        <div class="processing-box">
+                            <strong>采样生成</strong><br>
+                            选择下一个token
+                        </div>
+                        <div class="processing-arrow">→</div>
+                        <div class="processing-box diff-step">
+                            <strong>回复解析</strong><br>
+                            解析[assistant]后的内容,判断是普通回复，还是函数调用，如果是函数调用，将调用信息填充到tool_calls字段
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" data-tab="questions">
+            <div class="focus-point">
+                <div class="key-questions">
+                    <ul>
+                        <li>如何准确识别用户意图并选择合适的函数？</li>
+                        <li>如何处理函数调用失败和错误情况？</li>
+                        <li>如何处理函数调用的上下文依赖关系？</li>
+                        <li>如何优雅地处理函数返回结果并组织回复？</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" data-tab="features">
+            <div class="focus-point">
+                <p> 能够理解和生成结构化的数据（比如JSON）</p>
+                <p> 可以根据上下文选择合适的函数</p>
+            </div>
+        </div>
+
+        <div class="tab-content" data-tab="compare">
+            <div class="key-diff">
+                <div class="key-diff-title">与前一阶段的关键区别</div>
+                <ul class="diff-list">
+                    <li class="diff-item">增加了函数调用能力</li>
+                    <li class="diff-item">支持结构化输出</li>
+                    <li class="diff-item" style="color: #f8f8bb;">具备了作为大脑的基础能力</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

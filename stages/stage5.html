@@ -1,0 +1,232 @@
+<div class="stage-description">
+    严格来讲这个阶段的模型跟上一个阶段并没有本质的不同，主要的区别体现在挂载的工具的复杂程度更高，导致需要强化某些方面的能力，比如更强的图片理解、更精准的函数调用。
+</div>
+
+<div class="visualization-container">
+    <div class="tab-container">
+        <div class="tab-buttons">
+            <button class="tab-button active" data-tab="product">产品形态</button>
+            <button class="tab-button" data-tab="api">接口形态</button>
+            <button class="tab-button" data-tab="prompt">工作原理</button>
+            <button class="tab-button" data-tab="questions">关键问题</button>
+            <button class="tab-button" data-tab="features">阶段特点</button>
+            <button class="tab-button" data-tab="compare">阶段对比</button>
+        </div>
+
+        <div class="tab-content active" data-tab="product">
+            <div class="model-card">
+                <div class="model-header">
+                    <span>模型控制的按键精灵</span>
+                    <span>例如：OpenAI Operator，Claude Computor Use</span>
+                </div>
+                <video class="demo-video" style="width: 100%; height: 100%; max-width: 100%; object-fit: contain;" autoplay loop muted playsinline>
+                    <source src="assets/browser-use-product.mp4" type="video/mp4">
+                    您的浏览器不支持 video 标签。
+                </video>
+            </div>
+        </div>
+
+        <div class="tab-content" data-tab="api">
+            <div class="focus-point">
+                <p>跟前一个阶段一样，通过 Chat Completion API来提供服务， 最大的差异在于tools字段传递的工具不一样，以及增加了图片的消息类型。以下是一个典型的API调用示例：</p>
+
+                <div class="api-example">
+                    <div class="api-request">
+                        <div class="code-header">请求示例</div>
+                        <pre class="code-block"><code>curl https://xxxx/v1/chat/completions \
+-H "Content-Type: application/json" \
+-d '{
+      "model": "claude-3.7",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Save a picture of a cat to my desktop."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "computer",
+            "description": "A tool that allows the agent to interact with the screen, keyboard, and mouse of the current computer.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "action": {
+                  "type": "string",
+                  "description": "The action to perform, e.g. 'click', 'type', 'screenshot'."
+                },
+                "text": {
+                  "type": "string",
+                  "description": "The text to type, if action is 'type'."
+                },
+                "coordinate" : {
+                    "type": "object",
+                    "properties": {
+                        "x": {
+                        "type": "number",
+                        "description": "The x-coordinate of the mouse."
+                        },
+                        "y": {
+                        "type": "number",
+                        "description": "The y-coordinate of the mouse."
+                        }
+                    }
+                }
+            },
+            "required": ["action"]
+          }
+        }
+      }
+    ],
+  "tool_choice": "auto"
+}'
+                          </code></pre>
+                    </div>
+
+                    <div class="api-response">
+                        <div class="code-header">响应示例</div>
+                        <pre class="code-block"><code>{
+  "model": "gpt-4o-mini",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": null,
+        "tool_calls": [
+          {
+            "id": "call_abc123",
+            "type": "function",
+            "function": {
+              "name": "computer",
+              "arguments": "{\n\"action\": \"screenshot\"\n}"
+            }
+          }
+        ]
+      },
+      "finish_reason": "tool_calls"
+    }
+  ]
+}
+
+                          </code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" data-tab="prompt">
+            <div class="focus-point">
+                <p>与前一个阶段基本是一致的，最大的变化在于针对内置工具做了强化训练，模型之上提供了内置工具供客户使用。提示词模版结构通常还是:
+                <pre>
+                    [system] system message [/system]
+                    [tools]工具的描述（工具名、 参数、注释）[/tools]
+                    [user]第一条消息[/user]
+                    [assistant]第一条回复[/assistant] 
+                    ...
+                    [user]用户最新的输入[/user]
+                    [assistant]
+                </pre>
+                需要注意的是，<strong style="color: #f8f8bb;">这个时候的API不再是单纯的模型API了，外围会有额外的处理逻辑</strong>
+                </p>
+                <div class="model-internals">
+                    <div class="flow-title">模型服务流程</div>
+                    <div class="processing-step">
+                        <div class="processing-box">
+                            <strong>输入上下文</strong><br>
+                            原始文本序列
+                        </div>
+                        <div class="processing-arrow">→</div>
+                        <div class="processing-box diff-step">
+                            <strong>模版填充</strong><br>
+                            将用户输入填充到完整的prompt模版里
+                        </div>
+                        <div class="processing-arrow">→</div>
+                        <div class="processing-box">
+                            <strong>Token化</strong><br>
+                            切分为词元
+                        </div>
+                        <div class="processing-arrow">→</div>
+                        <div class="processing-box">
+                            <strong>概率分布</strong><br>
+                            计算下一个词的概率
+                        </div>
+                        <div class="processing-arrow loop-arrow">↻</div>
+                        <div class="processing-box">
+                            <strong>采样生成</strong><br>
+                            选择下一个token
+                        </div>
+                        <div class="processing-arrow">→</div>
+                        <div class="processing-box diff-step">
+                            <strong>回复解析</strong><br>
+                            解析[assistant]后的内容,判断是普通回复，还是函数调用，如果是函数调用，将调用信息填充到tool_calls字段
+                        </div>
+                    </div>
+                </div>
+                <div class="model-api">
+                    <div class="call-flow">
+                        <div class="flow-title">内置工具流程</div>
+                        <div class="processing-step">
+                            <div class="processing-box">
+                                <span class="step-desc">接收模型输出的tool_calls字段</span>
+                            </div>
+                            <div class="processing-arrow">→</div>
+                            <div class="processing-box">
+                                <span class="step-desc">解析tool_calls中的function name和arguments</span>
+                            </div>
+                            <div class="processing-arrow">→</div>
+                            <div class="processing-box">
+                                <span class="step-desc">调用对应的内置工具函数</span>
+                            </div>
+                            <div class="processing-arrow">→</div>
+                            <div class="processing-box">
+                                <span class="step-desc">获取工具执行结果</span>
+                            </div>
+                            <div class="processing-arrow">→</div>
+                            <div class="processing-box">
+                                <span class="step-desc">将执行结果作为新消息发送给模型</span>
+                            </div>
+                            <div class="processing-arrow">→</div>
+                            <div class="processing-box">
+                                <span class="step-desc">重复上述步骤直到完成任务</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" data-tab="questions">
+            <div class="focus-point">
+                <div class="key-questions">
+                    <ul>
+                        <li>如何准确识别屏幕上的视觉元素并确定操作位置？</li>
+                        <li>如何准确指定具体的操作动作？</li>
+                        <li>如何协调多步骤操作的时序和依赖关系？</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" data-tab="features">
+            <div class="focus-point">
+                <p> 强大的图像理解能力</p>
+                <p> 更精准的工具调用</p>
+                <p> 多步骤任务规划</p>
+                <p> 屏幕元素定位与操作</p>
+            </div>
+        </div>
+
+        <div class="tab-content" data-tab="compare">
+            <div class="key-diff">
+                <div class="key-diff-title">与前一阶段的关键区别</div>
+                <ul class="diff-list">
+                    <li class="diff-item">图像理解能力显著增强</li>
+                    <li class="diff-item">工具调用更加精准可靠</li>
+                    <li class="diff-item" style="color: #f8f8bb;">从只提供模型到提供带内置工具的解决方案</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

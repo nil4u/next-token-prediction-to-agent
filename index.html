@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>从文字接龙到 Agent</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <link href="https://cdn.staticfile.org/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.staticfile.org/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+    <!-- and it's easy to individually load additional languages -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/shell.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+    <link rel="stylesheet" href="styles/main.css" />
+    <script src="js/stageLoader.js"></script>
+    <script src="js/main.js"></script>
+  </head>
+
+  <body>
+    <h1>从文字接龙到 Agent</h1>
+    <div class="container page-layout">
+      <div class="timeline-container">
+        <div class="timeline vertical">
+          <div class="timeline-item" data-stage="stage1">
+            <div class="timeline-dot"></div>
+            <div class="timeline-label">文字接龙</div>
+            <div class="timeline-label">next token prediction</div>
+          </div>
+          <div class="timeline-item" data-stage="stage2">
+            <div class="timeline-dot"></div>
+            <div class="timeline-label">指令遵循</div>
+            <div class="timeline-label">instruction following</div>
+          </div>
+          <div class="timeline-item" data-stage="stage3">
+            <div class="timeline-dot"></div>
+            <div class="timeline-label">对话</div>
+            <div class="timeline-label">chat</div>
+          </div>
+          <div class="timeline-item" data-stage="stage4">
+            <div class="timeline-dot"></div>
+            <div class="timeline-label">函数调用</div>
+            <div class="timeline-label">function/tool call</div>
+          </div>
+          <div class="timeline-item" data-stage="stage5">
+            <div class="timeline-dot"></div>
+            <div class="timeline-label">计算机使用</div>
+            <div class="timeline-label">computer/browser use</div>
+          </div>
+          <div class="timeline-item" data-stage="stage6">
+            <div class="timeline-dot"></div>
+            <div class="timeline-label">工具集市/互联互通</div>
+            <div class="timeline-label">model context protocol</div>
+          </div>
+          <div class="timeline-item" data-stage="stage7">
+            <div class="timeline-dot"></div>
+            <div class="timeline-label">自主行动</div>
+            <div class="timeline-label">Agent</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="main-content">
+        <div class="content-area">
+          <div id="stage1" class="stage-container"></div>
+          <div id="stage2" class="stage-container"></div>
+          <div id="stage3" class="stage-container"></div>
+          <div id="stage4" class="stage-container"></div>
+          <div id="stage5" class="stage-container"></div>
+          <div id="stage6" class="stage-container"></div>
+          <div id="stage7" class="stage-container"></div>
+        </div>
+
+        <!-- 页面底部总结 -->
+        <!-- <div class="summary-section">
+          <p>
+            从最初的Token预测到现代Agent架构，大语言模型的发展历程体现了从简单文本生成到复杂任务执行的跨越。每个阶段都引入了新的提示模板结构和输出格式化方式，不断增强模型的能力边界。
+          </p>
+
+          <div class="feature-list">
+            <div class="feature-item">Token预测: 纯文本连续性</div>
+            <div class="feature-item">指令遵循: 任务导向格式</div>
+            <div class="feature-item">对话: 角色与上下文维护</div>
+            <div class="feature-item">函数调用: 结构化输出</div>
+            <div class="feature-item">计算机使用: 代码执行与多模态</div>
+            <div class="feature-item">Agent: 思考-行动-观察循环</div>
+          </div>
+        </div> -->
+      </div>
+    </div>
+  </body>
+</html>

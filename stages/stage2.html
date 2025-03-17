@@ -1,0 +1,148 @@
+<div class="stage-description">
+    在这个阶段，模型被训练为理解并执行人类指令。通过后训练（指令微调），模型学会遵循指令并产生有帮助、真实且无害的回答，不过底层原理上一样是在预测可能的下一个token。
+</div>
+
+<div class="visualization-container">
+    <div class="tab-container">
+        <div class="tab-buttons">
+            <button class="tab-button active" data-tab="product">产品形态</button>
+            <button class="tab-button" data-tab="api">接口形态</button>
+            <button class="tab-button" data-tab="prompt">工作原理</button>
+            <button class="tab-button" data-tab="questions">关键问题</button>
+            <button class="tab-button" data-tab="features">阶段特点</button>
+            <button class="tab-button" data-tab="compare">阶段对比</button>
+        </div>
+
+        <div class="tab-content" data-tab="questions">
+            <div class="focus-point">
+                <ul class="key-questions">
+                    <li class="question-item">如何确保模型准确理解并遵循指令？</li>
+                    <li class="question-item">如何评估模型对指令的执行效果？</li>
+                    <li class="question-item">模型如何在保持知识的同时学会遵循指令？</li>
+                    <li class="question-item">如何处理模棱两可或有害的指令？</li>
+                    <li class="question-item">如何提高模型对各类指令的泛化能力？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="tab-content active" data-tab="product">
+            <div class="model-card">
+                <div class="model-header">
+                    <span>辅助模型效果可视化的小工具</span>
+                    <span>例如：OpenAI早期的Playground</span>
+                </div>
+                <div class="model-body">
+                    <div class="prompt-area">
+                        <div class="prompt-label">输入 (带指令的Prompt):</div>
+                        <div class="prompt-content">解释什么是量子计算，使用简单的语言让10岁小孩也能理解</div>
+                    </div>
+
+                    <div class="output-area">
+                        <div class="output-label">输出 (按指令格式化的回答):</div>
+                        <div class="output-content">量子计算就像是一种超级强大的计算方式。普通电脑用的是0和1，就像开关只有开和关两种状态。而量子计算机可以同时处于开和关的状态，就像魔法一样！这让它能够同时尝试很多可能性，解决非常复杂的问题。想象你需要找到一本特定的书，普通电脑会一本一本地查找，而量子计算机可以同时查看所有的书。这就是为什么科学家们认为量子计算机未来可以帮助我们解决现在的电脑需要花很长时间才能解决的问题！
+                        </div>
+                    </div>
+                </div>
+                <div class="model-footer">
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" data-tab="api">
+            <div class="focus-point">
+                <p>跟前一个阶段一样，大语言模型还是通过简单的Completion API来提供服务。输入是用户指令，输出为模型的回答。以下是一个典型的API调用示例：</p>
+
+                <div class="api-example">
+                    <div class="api-request">
+                        <div class="code-header">请求示例</div>
+                        <pre class="code-block"><code>curl https://xxx/v1/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "davinci-002",
+    "prompt": "解释什么是量子计算，使用简单的语言让10岁小孩也能理解"
+  }'</code></pre>
+                    </div>
+
+                    <div class="api-response">
+                        <div class="code-header">响应示例</div>
+                        <pre class="code-block"><code>{
+    "id": "cmpl-xxx",
+    "object": "text_completion",
+    "created": 1677649420,
+    "model": "davinci-002",
+    "text": "量子计算就像是一种超级强大的计算方式。普通电脑用的是0和1，就像开关只有开和关两种状态...",
+    "finish_reason": "length"
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" data-tab="prompt">
+            <div class="focus-point">
+                <p>在这个阶段，模型引入了<strong style="color: #f8f8bb;">指令式提示模板</strong>。不再直接使用用户的输入，而是将其填充到模版中作为模型输入。模版结构通常为:
+                <pre>
+                    [instruction] 用户输入 [/instruction][answer] </pre>
+                </p>
+                <p>训练时使用大量的指令-回答对，通过RLHF（基于人类反馈的强化学习）来优化模型对指令的响应，使得模型输出符合人类偏好。</p>
+                <div class="model-internals">
+                    <div class="processing-step">
+                        <div class="processing-box">
+                            <strong>输入上下文</strong><br>
+                            原始文本序列
+                        </div>
+                        <div class="processing-arrow">→</div>
+                        <div class="processing-box diff-step">
+                            <strong>模版填充</strong><br>
+                            将用户输入填充到完整的prompt模版里
+                        </div>
+                        <div class="processing-arrow">→</div>
+                        <div class="processing-box">
+                            <strong>Token化</strong><br>
+                            切分为词元
+                        </div>
+                        <div class="processing-arrow">→</div>
+                        <div class="processing-box">
+                            <strong>概率分布</strong><br>
+                            计算下一个词的概率
+                        </div>
+                        <div class="processing-arrow loop-arrow">↻</div>
+                        <div class="processing-box">
+                            <strong>采样生成</strong><br>
+                            选择下一个token
+                        </div>
+                        <div class="processing-arrow">→</div>
+                        <div class="processing-box diff-step">
+                            <strong>答案解析</strong><br>
+                            解析[answer]后的内容作为输出
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" data-tab="features">
+            <div class="focus-point">
+                <p>在这个阶段，模型引入了<strong style="color: #f8f8bb;">指令式提示模板</strong>。不再直接使用用户的输入，而是将其填充到模版中作为模型输入。模版结构通常为:
+                    <pre>
+                        [instruction] 用户输入 [/instruction][answer] </pre>
+                    </p>
+                    <p>训练时使用大量的指令-回答对，通过RLHF（基于人类反馈的强化学习）来优化模型对指令的响应，使得模型输出符合人类偏好。</p>
+            </div>
+        </div>
+
+
+        <div class="tab-content" data-tab="compare">
+            <div class="key-diff">
+                <div class="key-diff-title">与前一阶段的关键区别</div>
+                <ul class="diff-list">
+                    <li class="diff-item">引入了<strong>明确的指令结构</strong>，使模型能够理解任务意图</li>
+                    <li class="diff-item">不再只是预测统计上最可能的下一个词，而是根据指令要求生成回答</li>
+                    <li class="diff-item">输出更加结构化，针对具体任务优化</li>
+                    <li class="diff-item">微调数据集包含人类的偏好信息，使模型更加对齐人类价值观</li>
+                    <li class="diff-item">低层实现上引入了"与人类意图对齐"的训练目标</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
